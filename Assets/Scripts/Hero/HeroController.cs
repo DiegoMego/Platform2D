@@ -10,6 +10,7 @@ public class HeroController : MonoBehaviour
     private float fallMultiplier = 2;
     private float loadJumpMultiplier = 2;
     private bool canDoubleJump = false;
+    private float startfallingthreshold = -3f;
     public GameObject bulletPrefab;
 
     private Animator animator;
@@ -62,11 +63,20 @@ public class HeroController : MonoBehaviour
         {
             if (isJumping)
             {
-                animator.SetBool("IsJumping", true);
+                if (rb.velocity.y > 0f)
+                {
+                    animator.SetBool("IsJumping", true);
+                }
+                else if (rb.velocity.y < startfallingthreshold)
+                {
+                    animator.SetBool("IsJumping", false);
+                    animator.SetBool("IsFalling", true);
+                }
             }
             else
             {
                 animator.SetBool("IsJumping", false);
+                animator.SetBool("IsFalling", false);
             }
 
             if (Input.GetKeyDown(KeyCode.LeftControl))
