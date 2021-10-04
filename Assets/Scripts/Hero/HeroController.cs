@@ -1,16 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HeroController : MonoBehaviour
 {
     private float speed = 7f;
     private float jumpSpeed = 7f;
-    private float extraSpace = 0.1f;
+    private float extraSpace = 0.2f;
     private float fallMultiplier = 2;
     private float loadJumpMultiplier = 2;
     private bool canDoubleJump = false;
     private float startfallingthreshold = -3f;
+    private float teleportationDistance = 10f;
     public GameObject bulletPrefab;
 
     private Animator animator;
@@ -21,10 +23,12 @@ public class HeroController : MonoBehaviour
     private bool isAlive = true;
     private Vector3 startPosition;
     private Transform firePoint;
+    private Slider powerBarSlider;
 
     private void Awake()
     {
         firePoint = transform.Find("FirePoint");
+        powerBarSlider = GameObject.Find("PowerBar").GetComponent<Slider>();
     }
 
     private void Start()
@@ -65,6 +69,7 @@ public class HeroController : MonoBehaviour
             {
                 if (rb.velocity.y > 0f)
                 {
+                    animator.SetBool("IsFalling", false);
                     animator.SetBool("IsJumping", true);
                 }
                 else if (rb.velocity.y < startfallingthreshold)
@@ -134,6 +139,14 @@ public class HeroController : MonoBehaviour
                     rb.AddForce(transform.up * jumpSpeed, ForceMode2D.Impulse);
                 }
             }
+
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                if (powerBarSlider.value == powerBarSlider.maxValue)
+                {
+                    Teleport();
+                }
+            }
         }
         else
         {
@@ -144,6 +157,27 @@ public class HeroController : MonoBehaviour
                 isAlive = true;
             }
         }
+    }
+
+    private void Teleport()
+    {
+        if (transform.localScale.x == -1)
+        {
+            transform.position = new Vector3(
+                transform.position.x - teleportationDistance,
+                transform.position.y,
+                transform.position.z
+            );
+        }
+        else
+        {
+            transform.position = new Vector3(
+                transform.position.x + teleportationDistance,
+                transform.position.y,
+                transform.position.z
+            );
+        }
+        powerBarSlider.value = 0f;
     }
 
     private bool IsNotJumping()

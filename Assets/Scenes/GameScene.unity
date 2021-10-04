@@ -242,7 +242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c953182dd60870343b3b1a19a71eb5e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 3817326193652604400, guid: 1fa61e5571fb9314da66fa8937ffcc11, type: 3}
+  bulletPrefab: {fileID: 6625645806133403182, guid: 1fa61e5571fb9314da66fa8937ffcc11, type: 3}
 --- !u!50 &33947109
 Rigidbody2D:
   serializedVersion: 4
@@ -327,7 +327,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.0644832, y: 1}
+    m_SensorSize: {x: 2.164251, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -1098,7 +1098,7 @@ MonoBehaviour:
   m_ScreenX: 0.5
   m_ScreenY: 0.5
   m_CameraDistance: 10
-  m_DeadZoneWidth: 0
+  m_DeadZoneWidth: 2
   m_DeadZoneHeight: 0.992
   m_DeadZoneDepth: 0
   m_UnlimitedSoftZone: 0
@@ -1246,7 +1246,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 100
   m_WholeNumbers: 0
-  m_Value: 100
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
