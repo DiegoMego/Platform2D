@@ -222,10 +222,10 @@ public class HeroController : MonoBehaviour
         }
     }
 
-    private void Hurt()
+    private void Hurt(float damage)
     {
         animator.SetTrigger("IsHurt");
-        healthBarSlider.value -= healthBarSlider.maxValue * 0.2f;
+        healthBarSlider.value -= damage;
         if (healthBarSlider.value <= 0)
         {
             this.isAlive = false;
@@ -237,7 +237,7 @@ public class HeroController : MonoBehaviour
         if (collision.transform.CompareTag("Enemy"))
         {
             enemyContactTime = Time.time;
-            Hurt();
+            Hurt(healthBarSlider.maxValue * 0.2f);
         }
     }
 
@@ -247,7 +247,7 @@ public class HeroController : MonoBehaviour
         {
             if (Time.time - enemyContactTime >= contactTimeToRecieveDamage)
             {
-                Hurt();
+                Hurt(healthBarSlider.maxValue * 0.2f);
                 enemyContactTime = Time.time;
             }
         }
@@ -260,6 +260,11 @@ public class HeroController : MonoBehaviour
             isAlive = false;
             transform.position += Vector3.down * 2f;
             rb.bodyType = RigidbodyType2D.Static;
+        }
+        if (collision.transform.CompareTag("FireBreath"))
+        {
+            Hurt(healthBarSlider.maxValue * 0.25f);
+            enemyContactTime = Time.time;
         }
     }
 
