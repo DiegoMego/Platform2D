@@ -15,6 +15,7 @@ public class HeroController : MonoBehaviour
     private float teleportationDistance = 18f;
     private float minimunStartPosition = -19f;
     private float endPosition = 192f;
+    private bool hasTeleported = false;
 
     public GameObject bulletPrefab;
 
@@ -206,6 +207,7 @@ public class HeroController : MonoBehaviour
                 transform.position.z
             );
         }
+        hasTeleported = true;
         powerBarSlider.value = 0f;
     }
 
@@ -250,6 +252,12 @@ public class HeroController : MonoBehaviour
         {
             enemyContactTime = Time.time;
             Hurt(healthBarSlider.maxValue * 0.2f);
+            if (hasTeleported)
+            {
+                healthBarSlider.value = 0f;
+                hasTeleported = false;
+                isAlive = false;
+            }
         }
     }
 
