@@ -13,6 +13,7 @@ public class HeroController : MonoBehaviour
     private bool canDoubleJump = false;
     private float startfallingthreshold = -3f;
     private float teleportationDistance = 18f;
+    private float minimunStartPosition = -19f;
     public GameObject bulletPrefab;
 
     private Animator animator;
@@ -123,6 +124,16 @@ public class HeroController : MonoBehaviour
             }
 
             transform.position += Vector3.right * movement * speed * Time.deltaTime;
+
+            //Left invisible wall so hero doesn't jump off running to the left
+            if (transform.position.x <= minimunStartPosition)
+            {
+                transform.position = new Vector3(
+                    minimunStartPosition,
+                    transform.position.y,
+                    transform.position.z
+                );
+            }
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
