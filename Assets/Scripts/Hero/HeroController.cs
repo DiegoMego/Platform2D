@@ -14,6 +14,8 @@ public class HeroController : MonoBehaviour
     private float startfallingthreshold = -3f;
     private float teleportationDistance = 18f;
     private float minimunStartPosition = -19f;
+    private float endPosition = 192f;
+
     public GameObject bulletPrefab;
 
     private Animator animator;
@@ -138,6 +140,16 @@ public class HeroController : MonoBehaviour
                     transform.position.z
                 );
             }
+
+            if (transform.position.x >= endPosition)
+            {
+                transform.position = new Vector3(
+                    endPosition,
+                    transform.position.y,
+                    transform.position.z
+                );
+            }
+
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
