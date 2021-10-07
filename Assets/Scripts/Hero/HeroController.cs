@@ -12,7 +12,7 @@ public class HeroController : MonoBehaviour
     private float loadJumpMultiplier = 2;
     private bool canDoubleJump = false;
     private float startfallingthreshold = -3f;
-    private float teleportationDistance = 10f;
+    private float teleportationDistance = 18f;
     public GameObject bulletPrefab;
 
     private Animator animator;
