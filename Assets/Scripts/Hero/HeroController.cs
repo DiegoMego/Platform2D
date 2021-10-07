@@ -25,11 +25,15 @@ public class HeroController : MonoBehaviour
     private Vector3 startPosition;
     private Transform firePoint;
     private Slider powerBarSlider;
+    private Slider healthBarSlider;
+    private float enemyContactTime = 0f;
+    private float contactTimeToRecieveDamage = 3f;
 
     private void Awake()
     {
         firePoint = transform.Find("FirePoint");
-        powerBarSlider = GameObject.Find("PowerBar").GetComponent<Slider>();
+        powerBarSlider = transform.Find("Canvas").Find("PowerBar").GetComponent<Slider>();
+        healthBarSlider = transform.Find("Canvas").Find("HealthBar").GetComponent<Slider>();
     }
 
     private void Start()
@@ -165,6 +169,8 @@ public class HeroController : MonoBehaviour
             {
                 transform.position = startPosition;
                 rb.bodyType = RigidbodyType2D.Dynamic;
+                healthBarSlider.value = healthBarSlider.maxValue;
+                powerBarSlider.value = 0f;
                 isAlive = true;
             }
         }
@@ -213,6 +219,37 @@ public class HeroController : MonoBehaviour
         else
         {
             Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        }
+    }
+
+    private void Hurt()
+    {
+        animator.SetTrigger("IsHurt");
+        healthBarSlider.value -= healthBarSlider.maxValue * 0.2f;
+        if (healthBarSlider.value <= 0)
+        {
+            this.isAlive = false;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.CompareTag("Enemy"))
+        {
+            enemyContactTime = Time.time;
+            Hurt();
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.transform.CompareTag("Enemy"))
+        {
+            if (Time.time - enemyContactTime >= contactTimeToRecieveDamage)
+            {
+                Hurt();
+                enemyContactTime = Time.time;
+            }
         }
     }
 
