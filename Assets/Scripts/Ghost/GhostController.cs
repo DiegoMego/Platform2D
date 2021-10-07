@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 public class GhostController : MonoBehaviour
 {
-    private float speed = 7f;
+    private float speed = 4f;
     public bool Running { get; set; }
     private Slider slider;
     private Animator animator;
+    private float minAggroDistance = 10f;
 
     private void Awake()
     {
@@ -19,6 +20,16 @@ public class GhostController : MonoBehaviour
 
     private void Update()
     {
+        Vector3 ghostPos = transform.position;
+        Vector3 heroPos = GameManager.Instance.hero.transform.position;
+
+        float distance = Vector3.Distance(ghostPos, heroPos);
+
+        if (distance <= minAggroDistance)
+        {
+            this.Running = true;
+        }
+
         if (Running)
         {
             transform.position += Vector3.left * speed * Time.deltaTime;
