@@ -168,6 +168,8 @@ public class HeroController : MonoBehaviour
                 }
             }
 
+            hasTeleported = false;
+
             if (Input.GetKeyDown(KeyCode.F))
             {
                 if (powerBarSlider.value == powerBarSlider.maxValue)
