@@ -6,8 +6,8 @@ TagManager:
   tags:
   - Water
   - Enemy
-  - CheckPoint
   - FireBreath
+  - Bullet
   layers:
   - Default
   - TransparentFX

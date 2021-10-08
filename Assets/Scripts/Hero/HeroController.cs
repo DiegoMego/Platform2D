@@ -12,7 +12,11 @@ public class HeroController : MonoBehaviour
     private float loadJumpMultiplier = 2;
     private bool canDoubleJump = false;
     private float startfallingthreshold = -3f;
-    private float teleportationDistance = 10f;
+    private float teleportationDistance = 18f;
+    private float minimunStartPosition = -19f;
+    private float endPosition = 192f;
+    private bool hasTeleported = false;
+
     public GameObject bulletPrefab;
 
     private Animator animator;
@@ -24,11 +28,15 @@ public class HeroController : MonoBehaviour
     private Vector3 startPosition;
     private Transform firePoint;
     private Slider powerBarSlider;
+    private Slider healthBarSlider;
+    private float enemyContactTime = 0f;
+    private float contactTimeToRecieveDamage = 3f;
 
     private void Awake()
     {
         firePoint = transform.Find("FirePoint");
-        powerBarSlider = GameObject.Find("PowerBar").GetComponent<Slider>();
+        powerBarSlider = transform.Find("Canvas").Find("PowerBar").GetComponent<Slider>();
+        healthBarSlider = transform.Find("Canvas").Find("HealthBar").GetComponent<Slider>();
     }
 
     private void Start()
@@ -124,6 +132,26 @@ public class HeroController : MonoBehaviour
 
             transform.position += Vector3.right * movement * speed * Time.deltaTime;
 
+            //Left invisible wall so hero doesn't jump off running to the left
+            if (transform.position.x <= minimunStartPosition)
+            {
+                transform.position = new Vector3(
+                    minimunStartPosition,
+                    transform.position.y,
+                    transform.position.z
+                );
+            }
+
+            if (transform.position.x >= endPosition)
+            {
+                transform.position = new Vector3(
+                    endPosition,
+                    transform.position.y,
+                    transform.position.z
+                );
+            }
+
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 if (!isJumping)
@@ -140,6 +168,8 @@ public class HeroController : MonoBehaviour
                 }
             }
 
+            hasTeleported = false;
+
             if (Input.GetKeyDown(KeyCode.F))
             {
                 if (powerBarSlider.value == powerBarSlider.maxValue)
@@ -154,6 +184,8 @@ public class HeroController : MonoBehaviour
             {
                 transform.position = startPosition;
                 rb.bodyType = RigidbodyType2D.Dynamic;
+                healthBarSlider.value = healthBarSlider.maxValue;
+                powerBarSlider.value = 0f;
                 isAlive = true;
             }
         }
@@ -177,6 +209,7 @@ public class HeroController : MonoBehaviour
                 transform.position.z
             );
         }
+        hasTeleported = true;
         powerBarSlider.value = 0f;
     }
 
@@ -205,6 +238,43 @@ public class HeroController : MonoBehaviour
         }
     }
 
+    private void Hurt(float damage)
+    {
+        animator.SetTrigger("IsHurt");
+        healthBarSlider.value -= damage;
+        if (healthBarSlider.value <= 0)
+        {
+            this.isAlive = false;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.CompareTag("Enemy"))
+        {
+            enemyContactTime = Time.time;
+            Hurt(healthBarSlider.maxValue * 0.2f);
+            if (hasTeleported)
+            {
+                healthBarSlider.value = 0f;
+                hasTeleported = false;
+                isAlive = false;
+            }
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.transform.CompareTag("Enemy"))
+        {
+            if (Time.time - enemyContactTime >= contactTimeToRecieveDamage)
+            {
+                Hurt(healthBarSlider.maxValue * 0.2f);
+                enemyContactTime = Time.time;
+            }
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.transform.CompareTag("Water"))
@@ -212,6 +282,11 @@ public class HeroController : MonoBehaviour
             isAlive = false;
             transform.position += Vector3.down * 2f;
             rb.bodyType = RigidbodyType2D.Static;
+        }
+        if (collision.transform.CompareTag("FireBreath"))
+        {
+            Hurt(healthBarSlider.maxValue * 0.25f);
+            enemyContactTime = Time.time;
         }
     }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DemonController : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class DemonController : MonoBehaviour
     private Animator animator;
     private GameObject fireBreath;
     private Transform firePoint;
+    private Slider slider;
     private float timeBetweenAttacks = 5f;
     private float lastAttackTime = 0f;
     public bool Running { get; set; }
@@ -21,6 +23,7 @@ public class DemonController : MonoBehaviour
     {
         Running = false;
         firePoint = transform.Find("FirePoint");
+        slider = transform.Find("EnemyHealth").Find("HealthBar").GetComponent<Slider>();
     }
 
     private void Start()
@@ -90,6 +93,22 @@ public class DemonController : MonoBehaviour
         {
             fireBreath = Instantiate(GameManager.Instance.breath, firePoint.position, Quaternion.identity);
             fireBreath.transform.parent = transform;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.transform.CompareTag("Bullet"))
+        {
+            int damage = collision.transform.GetComponent<BulletController>().damage;
+            slider.value -= damage;
+
+            if (slider.value <= 0)
+            {
+                // Debe morir
+                animator.SetTrigger("IsDead");
+                Running = false;
+            }
         }
     }
 }

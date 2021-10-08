@@ -3,18 +3,11 @@ using UnityEngine.UI;
 
 public class BulletController : MonoBehaviour
 {
+    public int damage = 50;
     private float speed = 8f;
     private float timeTilDestroyed = 15f;
     private float time = 0f;
     private Vector3 direction = Vector3.right;
-
-    private GameObject powerBar;
-    private Slider powerBarSlider;
-    private void Awake()
-    {
-        powerBar = GameObject.Find("PowerBar");
-        powerBarSlider = powerBar.GetComponent<Slider>();
-    }
 
     private void Start()
     {
@@ -39,7 +32,7 @@ public class BulletController : MonoBehaviour
         if (collision.transform.CompareTag("Enemy"))
         {
             //Aumentar la barra de poder
-            if (powerBarSlider.value < powerBarSlider.maxValue) powerBarSlider.value += powerBarSlider.maxValue * 0.25f;
+            if (GameManager.Instance.powerBarSlider.value < GameManager.Instance.powerBarSlider.maxValue) GameManager.Instance.powerBarSlider.value += GameManager.Instance.powerBarSlider.maxValue * 0.25f;
 
             //Si la bala choca con un objeto, se debe destruir la bala.
             Destroy(transform.gameObject);
